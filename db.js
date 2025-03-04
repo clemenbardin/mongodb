@@ -1,4 +1,4 @@
-const { MongoClient } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 
 async function run() {
     const uri = "mongodb+srv://bardinclement97:q2V9JNwYtQApgSqN@cluster0.crzwe.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
@@ -6,13 +6,20 @@ async function run() {
 
     try {
         await client.connect();
-        const db = client.db('ecommerce'); // Remplacer
-        const collection = db.collection('ecommerce_produits');
+        const db = client.db('bibliotheque_amazon');
+        const collection = db.collection('emprunts');
 
-        // const result = await collection.insertOne({ test: 'testDocument' });
-        // console.log('Document inséré :', result.insertedId);
+        db.produits.aggregate([
+            {
+              $group: {
+                _id: "$marque",
+                productCount: { $sum: 1 }
+              }
+            },
+            { $sort: { productCount: -1 } },
+            { $limit: 3 }
+          ]).toArray();
 
-        const result = await collection.deleteOne({ test: 'testDocument' });
     } catch (error) {
         console.error('Erreur :', error);
     } finally {
@@ -20,4 +27,4 @@ async function run() {
     }
 }
 
-run().catch(console.dir);
+run();
