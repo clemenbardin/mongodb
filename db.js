@@ -9,16 +9,14 @@ async function run() {
         const db = client.db('bibliotheque_amazon');
         const collection = db.collection('emprunts');
 
-        db.produits.aggregate([
-            {
-              $group: {
-                _id: "$marque",
-                productCount: { $sum: 1 }
-              }
-            },
-            { $sort: { productCount: -1 } },
-            { $limit: 3 }
-          ]).toArray();
+        const marque = await collection.createIndex({ marque: 1});
+        const prix = await collection.createIndex({ prix: 1});
+
+        const request = await collection.find( {
+            marque: {
+                $lt : "MarqueC",
+            }
+        }).explain();
 
     } catch (error) {
         console.error('Erreur :', error);
