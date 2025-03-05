@@ -109,7 +109,91 @@ async function run() {
             }
         )
 
+        const specialites = ["Info", "Francais", "Math", "Sciences"]
+        const collecEtudiant = db.collection("etudiants");
+
+        const etudiant = await collecEtudiant.insertMany([
+            {
+                _id: new ObjectId(),
+                nom: "Dorian",
+                age: 18,
+                ville: "Lyon",
+                specialite: `${Math.floor(Math.random(specialites) * specialites.length) + 1}`
+            },
+            {
+                _id: new ObjectId(),
+                nom: "Dorian",
+                age: 18,
+                ville: "Lyon",
+                specialite: `${Math.floor(Math.random(specialites) * specialites.length) + 1}`
+            },
+            {
+                _id: new ObjectId(),
+                nom: "Dorian",
+                age: 18,
+                ville: "Lyon",
+                specialite: `${Math.floor(Math.random(specialites) * specialites.length) + 1}`
+            },
+            {
+                _id: new ObjectId(),
+                nom: "Dorian",
+                age: 18,
+                ville: "Lyon",
+                specialite: `${Math.floor(Math.random(specialites) * specialites.length) + 1}`
+            },
+            {
+                _id: new ObjectId(),
+                nom: "Dorian",
+                age: 18,
+                ville: "Lyon",
+                specialite: `${Math.floor(Math.random(specialites) * specialites.length) + 1}`
+            }
+        ]).toArray();
         console.log(usersAvec2livres);
+
+        const etudiantParis = await collecEtudiant.find(
+            {},
+            { ville: "Paris" }
+        ).toArray();
+
+        const etudiant20 = await userCollection.find(
+            {},
+            { age : { $gt: 20 }}
+        ).toArray();
+
+        const etudiantSpe = await userCollection.find(
+            {},
+            {
+                specialite : "Informatique"
+            }
+        ).toArray();
+
+        const majAge = await userCollection.updateOne(
+            { nom: "Dorian" },
+            { $set: { nom: "Dorian" } }
+        )
+
+        const notes = await userCollection.updateMany(
+            {},
+            { $set: { notes: [12, 15, 18, 20, 10] } }
+        )
+
+        const sup  = await collecEtudiant.deleteOne({
+            nom: "Dorian",
+        })
+
+        const supAll = await collecEtudiant.deleteAll(
+            {},
+            { ville: "Lyon"}
+        ).toArray();
+
+        const ageMoyen = collecEtudiant.aggregate({
+            $group: { _id: null, age_moyen: { $avg: $age } }
+        }).toArray();
+
+        const etudCity = collecEtudiant.aggregate({
+            $group: { _id: ville, nbre_etud: { $sum: 1}}
+        }).toArray();
     } catch (error) {
         console.error("Erreur :", error);
     } finally {
